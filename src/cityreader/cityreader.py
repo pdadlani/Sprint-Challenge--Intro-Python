@@ -1,6 +1,17 @@
+import csv
+
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
 
+class City():
+  def __init__(self, name, lat, lon):
+    super().__init__()
+    self.name = name
+    self.lat = lat
+    self.lon = lon
+
+  def __repr__(self):
+    return f'<City: {self.name}, {self.lat}, {self.lon}'
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -18,9 +29,18 @@ cities = []
 
 def cityreader(cities=[]):
   # TODO Implement the functionality to read from the 'cities.csv' file
-  # For each city record, create a new City instance and add it to the 
-  # `cities` list
-    
+  with open('cities.csv', newline='') as csvfile:
+    reader = csv.reader(csvfile)
+    index = 0
+    for row in reader:
+      if (index != 0):
+        # For each city record, create a new City instance and add it to the 
+        # `cities` list
+        city = City(row[0], float(row[3]), float(row[4]))
+        cities.append(city)
+
+      index += 1
+
     return cities
 
 cityreader(cities)
@@ -68,4 +88,31 @@ def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
 
+  maxLat = max(float(lat1), float(lat2))
+  minLat = min(float(lat1), float(lat2))
+  maxLon = max(float(lon1), float(lon2))
+  minLon = min(float(lon1), float(lon2))
+
+  for city in cities:
+    if minLat <= city.lat <= maxLat and minLon <= city.lon <= maxLon:
+      within.append(city)
+
   return within
+
+def main():
+  first_coord_set = input('Please provide your first set of coordinates: ')
+  second_coord_set = input('Please provide your second set of coordinates: ')
+
+  lat1 = float(first_coord_set.split(',')[0])
+  lon1 = float(first_coord_set.split(',')[1])
+  lat2 = float(second_coord_set.split(',')[0])
+  lon2 = float(second_coord_set.split(',')[1])
+
+  search_area = cityreader_stretch(lat1, lon1, lat2, lon2, cities)
+
+  for city in search_area:
+    print(city)
+
+
+if __name__ == '__main__':
+  main()
