@@ -31,6 +31,8 @@ def cityreader(cities=[]):
   with open('cities.csv', newline='') as csvfile:
     city_reader = csv.reader(csvfile)
     # For each city record, create a new City instance and add it to the 
+    # city_list = [City(row[0], row[3], row[4]) for i, row in enumerate(city_reader) if i != 0]
+    # cities.append(city_list)
 
     # count = 0
     # for row in city_reader:
@@ -79,14 +81,35 @@ for c in cities:
 # Tucson: (32.1558,-110.8777)
 # Salt Lake City: (40.7774,-111.9301)
 
-# TODO Get latitude and longitude values from the user
-
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
   within = []
 
-  # TODO Ensure that the lat and lon valuse are all floats
-  # Go through each city and check to see if it falls within 
-  # the specified coordinates.
+  # Ensure that the lat and lon values are all floats
+  min_lat = min(float(lat1), float(lat2))
+  max_lat = max(float(lat1), float(lat2))
+  min_lon = min(float(lon1), float(lon2))
+  max_lon = max(float(lon1), float(lon2))
+
+  # Go through each city and check to see if it falls within the specified coordinates.
+  for city in cities:
+    if min_lat <= city.lat <= max_lat:
+      if min_lon <= city.lon <= max_lon:
+        within.append(city)
 
   return within
+
+def main():
+  first_coord = input("What is your first set of coords? ")
+  second_coord = input("What is your second set of coords? ")
+
+  first_parsed = first_coord.split(',')
+  second_parsed = second_coord.split(',')
+
+  found_cities = cityreader_stretch(float(first_parsed[0]), float(first_parsed[1]), float(second_parsed[0]), float(second_parsed[1]), cities)
+
+  for city in found_cities:
+    print(city)
+
+if __name__ == '__main__':
+  main()
